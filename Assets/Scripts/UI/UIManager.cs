@@ -12,12 +12,14 @@ public class UIManager : MonoBehaviour {
 	public TextMeshProUGUI gunName;
 	public TextMeshProUGUI ammoCount;
 	public GameObject ammoGrid;
+	public Image[] ammoSprite;
 
 	public TextMeshProUGUI[] itemAmount;	// 0 = medkits
 
 	[SerializeField] Color excellent, good, medium, bad;
 
 	PlayerMovement playerMovement;
+	WeaponsBehaviour weaponsBehaviour;
 
 	void Awake() {
 		playerMovement = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerMovement>();
@@ -45,14 +47,22 @@ public class UIManager : MonoBehaviour {
 		itemAmount[0].text = playerMovement.amountOfMidKits.ToString();
 
 		if(playerMovement.gunEquipped != null) {
-			gunName.text = playerMovement.gunEquipped.name;
+			weaponsBehaviour = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerMovement>().gunEquipped.GetComponent<WeaponsBehaviour>();
+			
+			gunName.text = weaponsBehaviour.weaponName;
 			gunName.fontSize = 18f;
+			
 			ammoGrid.SetActive(true);
+			for(int i = 0; i < ammoSprite.Length; i++) {
+				ammoSprite[i].sprite = weaponsBehaviour.bulletSprite;
+			}
+
 			ammoCount.enabled = true;
+			ammoCount.text = weaponsBehaviour.maxAmmo.ToString();
 		} else {
 			gunName.text = "";
 			ammoGrid.SetActive(false);
-			ammoCount.enabled = false;			
+			ammoCount.enabled = false;	
 		}
 	}
 

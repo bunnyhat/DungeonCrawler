@@ -85,12 +85,7 @@ public class PlayerMovement : MonoBehaviour {
 	void OnTriggerStay(Collider other) {
 		if(Input.GetKeyDown(KeyCode.E)) {
 			if(gunEquipped == null) {
-				if(other.gameObject.name == "Shotgun") {
-					gunEquipped = other.gameObject;
-					gunEquipped.transform.parent = handPosition;
-					gunEquipped.transform.position = handPosition.position;
-					gunEquipped.transform.rotation = handPosition.rotation;
-				} else if(other.gameObject.name == "Pistol") {
+				if(other.gameObject.tag == "Gun") {
 					gunEquipped = other.gameObject;
 					gunEquipped.transform.parent = handPosition;
 					gunEquipped.transform.position = handPosition.position;
