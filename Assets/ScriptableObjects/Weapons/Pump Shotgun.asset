@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Name: Pump Shotgun
   m_EditorClassIdentifier: 
   name: Pump Shotgun
-  weapon: {fileID: 0}
   weaponColors: []
   burstType: Semi-Auto
-  maxAmmo: 60
+  reloadTimer: 1.75
+  weaponDamage: 0
   magSize: 2
+  maxAmmo: 60

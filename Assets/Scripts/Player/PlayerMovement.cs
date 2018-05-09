@@ -17,9 +17,13 @@ public class PlayerMovement : MonoBehaviour {
 	Rigidbody m_rigidbody;
 	Animator m_animator;
 
+	WeaponsBehaviour weaponsBehaviour;
+
 	void Awake() {
 		m_rigidbody = GetComponent<Rigidbody>();
 		m_animator = GetComponent<Animator>();
+
+
 
 		maxHP = 100;
 		// currentHP = maxHP;
@@ -59,9 +63,15 @@ public class PlayerMovement : MonoBehaviour {
 				m_animator.SetFloat("yPos", 0);
 			}
 
-			if(gunEquipped != null && Input.GetKeyDown(KeyCode.Q)) {
-				gunEquipped.transform.parent = null;
-				gunEquipped = null;
+			if(gunEquipped != null) {
+				weaponsBehaviour = gunEquipped.GetComponent<WeaponsBehaviour>();
+				if(Input.GetKeyDown(KeyCode.Space) && weaponsBehaviour.clipSize > 0) {
+					weaponsBehaviour.StartCoroutine("Shoot");
+				}
+				if(Input.GetKeyDown(KeyCode.Q)) {
+					gunEquipped.transform.parent = null;
+					gunEquipped = null;
+				}
 			}
 
 			if((Input.GetKeyDown(KeyCode.F)) && (amountOfMidKits >= 1 && currentHP < 100)) {

@@ -15,29 +15,52 @@ public class WeaponsBehaviour : MonoBehaviour {
 
 	public string weaponName;
 	public string burstMode;
+	public float reloadTime;
 	public float damage;
-	public Sprite bulletSprite;
 	public int clipSize;
 	public int maxAmmo;
 
 	void Awake() {
 		weaponName = weaponType.name;
-		weaponType.weapon = this.GetComponent<GameObject>();
+		
 		burstMode = weaponType.burstType;
-		bulletSprite = weaponType.sprite;
+		reloadTime = weaponType.reloadTimer;
 
 		damage = weaponType.weaponDamage;
 		clipSize = weaponType.magSize;
 		maxAmmo = weaponType.maxAmmo;
 	}
 
-	void Update() {
+	public IEnumerator Shoot() {
 		switch(weapons) {
 			case WEAPONS.PISTOL:
-
+				clipSize -= 1;
+				yield return new WaitForSeconds(reloadTime);
+				if(clipSize == 0) {
+					if(maxAmmo >= 9) {
+						maxAmmo -= 9;
+						clipSize = 9;
+					}
+					if(maxAmmo < 9) {
+						clipSize = maxAmmo;
+						maxAmmo = 0;
+					}
+				}
 				break;
+			
 			case WEAPONS.PUMP_SHOTGUN:
-
+				clipSize -= 2;
+				yield return new WaitForSeconds(reloadTime);
+				if(clipSize == 0) {
+					if(maxAmmo >= 2) {
+						maxAmmo -= 2;
+						clipSize = 2;
+					}
+					if(maxAmmo < 2) {
+						clipSize = maxAmmo;
+						maxAmmo = 0;
+					}
+				}
 				break;
 		}
 	}

@@ -11,8 +11,6 @@ public class UIManager : MonoBehaviour {
 
 	public TextMeshProUGUI gunName;
 	public TextMeshProUGUI ammoCount;
-	public GameObject ammoGrid;
-	public Image[] ammoSprite;
 
 	public TextMeshProUGUI[] itemAmount;	// 0 = medkits
 
@@ -25,7 +23,6 @@ public class UIManager : MonoBehaviour {
 		playerMovement = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerMovement>();
 
 		gunName.text = "";
-		ammoGrid.SetActive(false);
 		ammoCount.enabled = false;
 	}
 
@@ -52,16 +49,10 @@ public class UIManager : MonoBehaviour {
 			gunName.text = weaponsBehaviour.weaponName;
 			gunName.fontSize = 18f;
 			
-			ammoGrid.SetActive(true);
-			for(int i = 0; i < ammoSprite.Length; i++) {
-				ammoSprite[i].sprite = weaponsBehaviour.bulletSprite;
-			}
-
 			ammoCount.enabled = true;
-			ammoCount.text = weaponsBehaviour.maxAmmo.ToString();
+			ammoCount.text = weaponsBehaviour.clipSize + " / " + weaponsBehaviour.maxAmmo;
 		} else {
 			gunName.text = "";
-			ammoGrid.SetActive(false);
 			ammoCount.enabled = false;	
 		}
 	}
