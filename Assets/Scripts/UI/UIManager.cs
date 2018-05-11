@@ -5,16 +5,24 @@ using UnityEngine.UI;
 using TMPro;
 
 public class UIManager : MonoBehaviour {
-	public Slider healthBar;
-	public Image fillColor;
-	public TextMeshProUGUI healthValue;
 
-	public TextMeshProUGUI gunName;
-	public TextMeshProUGUI ammoCount;
+	[Header("Player Info")]
+	public TextMeshProUGUI[] playerText;
+	public TextMeshProUGUI[] scoreText;
+	public Slider[] healthBar;
+	public Image[] fillColor;
+	public TextMeshProUGUI[] healthValue;
 
-	public TextMeshProUGUI[] itemAmount;	// 0 = medkits
+	public TextMeshProUGUI[] gunName;
+	public TextMeshProUGUI[] ammoCount;
 
-	[SerializeField] Color excellent, good, medium, bad;
+	public TextMeshProUGUI[] medKitAmount;
+
+	[Header("Health Bar Indicator Colors")]
+	public Color excellent;
+	public Color good;
+	public Color medium;
+	public Color bad;
 
 	PlayerMovement playerMovement;
 	WeaponsBehaviour weaponsBehaviour;
@@ -22,40 +30,64 @@ public class UIManager : MonoBehaviour {
 	void Awake() {
 		playerMovement = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerMovement>();
 
-		gunName.text = "";
-		ammoCount.enabled = false;
+		for(int i = 0; i < playerText.Length; i++) {
+			
+		}
+		for(int i = 0; i < scoreText.Length; i++) {
+			scoreText[i].text = "00000";
+			scoreText[i].color = Color.red;
+		}
+
+		for(int i = 0; i < gunName.Length; i++) {
+			gunName[i].text = "";
+		}
+		for(int i = 0; i < ammoCount.Length; i++) {
+			ammoCount[i].enabled = false;
+		}
 	}
 
 	void Update() {
-		healthBar.value = playerMovement.currentHP;
-		healthBar.maxValue = playerMovement.maxHP;
-		healthValue.text = playerMovement.currentHP + "/" + playerMovement.maxHP;
+		for(int i = 0; i < healthBar.Length; i++) {
+			for(int j = 0; j < fillColor.Length; j++) {
+				healthBar[i].value = playerMovement.currentHP;
+				healthBar[i].maxValue = playerMovement.maxHP;
 
-		if(healthBar.value <= 100 && healthBar.value >= 76) {
-			fillColor.color = excellent;
-		} else if(healthBar.value <= 75 && healthBar.value >= 51) {
-			fillColor.color = good;
-		} else if(healthBar.value <= 50 && healthBar.value >= 26) {
-			fillColor.color = medium;
-		} else if(healthBar.value <= 25) {
-			fillColor.color = bad;
+				if(healthBar[i].value <= 100 && healthBar[i].value >= 76) {
+					fillColor[j].color = excellent;
+				} else if(healthBar[i].value <= 75 && healthBar[i].value >= 51) {
+					fillColor[j].color = good;
+				} else if(healthBar[i].value <= 50 && healthBar[i].value >= 26) {
+					fillColor[j].color = medium;
+				} else if(healthBar[i].value <= 25) {
+					fillColor[j].color = bad;
+				}
+			}
 		}
 
-		itemAmount[0].text = playerMovement.amountOfMidKits.ToString();
-
-		if(playerMovement.gunEquipped != null) {
-			weaponsBehaviour = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerMovement>().gunEquipped.GetComponent<WeaponsBehaviour>();
-			
-			gunName.text = weaponsBehaviour.weaponName;
-			gunName.fontSize = 18f;
-			
-			ammoCount.enabled = true;
-			ammoCount.text = weaponsBehaviour.clipSize + " / " + weaponsBehaviour.maxAmmo;
-		} else {
-			gunName.text = "";
-			ammoCount.enabled = false;	
+		for(int i = 0; i < healthValue.Length; i++) {
+			healthValue[i].text = playerMovement.currentHP.ToString();
 		}
+
+		for(int i = 0; i < medKitAmount.Length; i++) {
+			medKitAmount[i].text = playerMovement.playerAttr.amountOfMedKits.ToString();
+		}
+
+		for(int i = 0; i < gunName.Length; i++) {
+			for(int j = 0; j < ammoCount.Length; i++) {
+				if(playerMovement.gunEquipped != null) {
+					weaponsBehaviour = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerMovement>().gunEquipped.GetComponent<WeaponsBehaviour>();
+					
+					gunName[i].text = weaponsBehaviour.weaponName;
+					gunName[i].fontSize = 18f;
+					
+					ammoCount[j].enabled = true;
+					ammoCount[j].text = weaponsBehaviour.clipSize + " / " + weaponsBehaviour.maxAmmo;
+				} else {
+					gunName[i].text = "";
+					ammoCount[j].enabled = false;	
+				}
+			}
+		}
+
 	}
-
-
 }

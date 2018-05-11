@@ -3,16 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour {
+	public PlayerAttributes playerAttr;
+	public int playerID;
 	public float walkSpeed;
+	public int score;
 	public int currentHP, maxHP;
-	public int amountOfMidKits;
+	public int medKits;
 
 	public Transform handPosition;
 	public GameObject gunEquipped;
 
 	public Transform spawnPosition;
 
-	private bool isDead = false;
+	private bool isDead;
 
 	Rigidbody m_rigidbody;
 	Animator m_animator;
@@ -23,28 +26,32 @@ public class PlayerMovement : MonoBehaviour {
 		m_rigidbody = GetComponent<Rigidbody>();
 		m_animator = GetComponent<Animator>();
 
-
-
-		maxHP = 100;
-		// currentHP = maxHP;
+		playerID = playerAttr.id;
+		walkSpeed = playerAttr.walkSpeed;
+		score = playerAttr.points;
+		currentHP = playerAttr.currentHP;
+		maxHP = playerAttr.maxHP;
+		medKits = playerAttr.amountOfMedKits;
+		isDead = playerAttr.isDead;
 
 		m_animator.SetFloat("xPos", 0);
 		m_animator.SetFloat("yPos", 1);
 	}
 
 	void Update() {
-		if(currentHP <= 0) { 
-			isDead = true;
-			currentHP = 0;
+		if(playerAttr.currentHP <= 0) { 
+			playerAttr.isDead = true;
+			playerAttr.currentHP = 0;
 		}
-		if(currentHP > maxHP) { currentHP = maxHP; }
 
-		if(!isDead) {
+		if(playerAttr.currentHP > playerAttr.maxHP) { playerAttr.currentHP = playerAttr.maxHP; }
+
+		if(!playerAttr.isDead) {
 			float moveHorizontal = Input.GetAxis("Horizontal");
 			float moveVertical = Input.GetAxis("Vertical");
 
 			Vector3 movement = new Vector3 (moveVertical, 0, -moveHorizontal);
-			m_rigidbody.velocity = movement * walkSpeed;
+			m_rigidbody.velocity = movement * playerAttr.walkSpeed;
 
 			if(Input.GetKeyDown(KeyCode.W)) {
 				m_animator.SetFloat("xPos", 0);
@@ -74,10 +81,10 @@ public class PlayerMovement : MonoBehaviour {
 				}
 			}
 
-			if((Input.GetKeyDown(KeyCode.F)) && (amountOfMidKits >= 1 && currentHP < 100)) {
-				currentHP += 20;
-				amountOfMidKits -= 1;
-				if(currentHP > 100) { currentHP = 100; }
+			if((Input.GetKeyDown(KeyCode.F)) && (playerAttr.amountOfMedKits >= 1 && playerAttr.currentHP < 100)) {
+				playerAttr.currentHP += 20;
+				playerAttr.amountOfMedKits -= 1;
+				if(playerAttr.currentHP > 100) { playerAttr.currentHP = 100; }
 			}
 
 		}
@@ -86,9 +93,9 @@ public class PlayerMovement : MonoBehaviour {
 
 	void OnTriggerEnter(Collider other) {
 		if(other.gameObject.tag == "Deadzone") {
-			isDead = true;
+			playerAttr.isDead = true;
 			this.transform.position = spawnPosition.position;
-			currentHP -= 10;
+			playerAttr.currentHP -= 10;
 		}
 	}
 
@@ -103,8 +110,8 @@ public class PlayerMovement : MonoBehaviour {
 				}
 			}
 			if(other.gameObject.name == "Medkit") {
-				if(amountOfMidKits < 3) {
-					amountOfMidKits += 1;
+				if(playerAttr.amountOfMedKits < 3) {
+					playerAttr.amountOfMedKits += 1;
 					other.gameObject.SetActive(false);
 				}
 			}
@@ -113,7 +120,7 @@ public class PlayerMovement : MonoBehaviour {
 
 	void OnTriggerExit(Collider other) {
 		if(other.gameObject.name == "Deadzone") {
-			isDead = false;
+			playerAttr.isDead = false;
 		}
 	}
 }
